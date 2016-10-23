@@ -1,11 +1,11 @@
 import time
 import struct
-
+from PIL import Image
+from pytesseract import *
 import Quartz.CoreGraphics as CG
 
 
 class ScreenPixel(object):
-
     def capture(self, region=None):
 
         if region is None:
@@ -47,7 +47,7 @@ if __name__ == '__main__':
         print "%s: %.02fms" % (msg, (end - start) * 1000)
 
 
-    region = CG.CGRectMake(1035, 330, 40, 40)
+    region = CG.CGRectMake(840, 310, 280, 80)
     sp = ScreenPixel()
 
     with timer("Capture"):
@@ -66,5 +66,13 @@ if __name__ == '__main__':
         for y in range(sp.height):
             c.point(x, y, color=sp.pixel(x, y))
 
-    with open("test.png", "wb") as f:
+    with open("test.jpg", "wb") as f:
         f.write(c.dump())
+    image_file = 'test.jpg'
+
+    im = Image.open(image_file).convert('L')
+    im.save('greyscale.jpg')
+    im = Image.open('greyscale.jpg')
+    text = image_to_string(im)
+    print "=====output=======\n"
+    print text
